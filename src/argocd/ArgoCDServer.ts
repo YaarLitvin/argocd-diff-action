@@ -98,7 +98,7 @@ export class ArgoCDServer {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let responseJson: any;
 
-                try {
+        try {
             const fetchOptions = {
                 method: method,
                 headers: {
@@ -106,17 +106,17 @@ export class ArgoCDServer {
                     ...Object.fromEntries(this.headers),
                 },
             };
-            
+
             // Add additional debugging
             core.debug(`Fetch options: ${JSON.stringify(fetchOptions)}`);
             core.debug(`Full URL being fetched: ${url}`);
             core.debug(`Protocol being used: ${this.protocol}`);
-            
+
             // For HTTP connections, we might need to disable TLS verification
             if (this.protocol === 'http') {
                 core.debug('Using HTTP protocol - no TLS verification needed');
             }
-            
+
             const response = await fetch(url, fetchOptions);
             core.debug(`API call response code: ${response.status}`);
             responseJson = await response.json();
