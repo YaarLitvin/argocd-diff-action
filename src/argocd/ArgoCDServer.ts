@@ -90,7 +90,7 @@ export class ArgoCDServer {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async api(endpoint: string, params: string[] = [], method = 'GET'): Promise<any> {
-        const url = `${this.protocol}://${this.fqdn}/api/${endpoint}?${params.join('&')}}`;
+        const url = `${this.protocol}://${this.fqdn}/api/${endpoint}?${params.join('&')}`;
         core.debug(`Making API call to: '${url}'`);
         core.debug(`Protocol: '${this.protocol}', FQDN: '${this.fqdn}'`);
 
@@ -99,13 +99,19 @@ export class ArgoCDServer {
         let responseJson: any;
 
         try {
-            const response = await fetch(url, {
+            const fetchOptions = {
                 method: method,
                 headers: {
                     Cookie: `argocd.token=${this.token}`,
                     ...Object.fromEntries(this.headers),
                 },
-            });
+            };
+            
+            // Add additional debugging
+            core.debug(`Fetch options: ${JSON.stringify(fetchOptions)}`);
+            core.debug(`Full URL being fetched: ${url}`);
+            
+            const response = await fetch(url, fetchOptions);
             core.debug(`API call response code: ${response.status}`);
             responseJson = await response.json();
         }
@@ -113,6 +119,10 @@ export class ArgoCDServer {
             if (err instanceof Error) {
                 core.error(`Failed to fetch ${endpoint} from ${this.fqdn}.`);
                 core.error(err.message);
+                core.error(`Error details: ${JSON.stringify(err)}`);
+                if (err.cause) {
+                    core.error(`Error cause: ${JSON.stringify(err.cause)}`);
+                }
             }
             throw err;
         }
