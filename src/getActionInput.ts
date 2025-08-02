@@ -20,14 +20,27 @@ export interface ActionInput {
 function parseHeaders(input: string): Map<string, string> {
     const headers = new Map<string, string>();
 
+    if (!input || input.trim() === '') {
+        return headers;
+    }
+
     for (const item of input.split(',')) {
+        if (!item || item.trim() === '') {
+            continue;
+        }
+
         let [header, value] = item.split(':');
 
-        assert(header);
-        assert(value);
+        if (!header || !value) {
+            continue;
+        }
 
         header = header.trim();
         value = value.trim();
+
+        if (header === '' || value === '') {
+            continue;
+        }
 
         assert.match(header, /.+/);
         assert.match(value, /.+/);
@@ -52,7 +65,7 @@ export default function getActionInput(): ActionInput {
         arch: process.env.ARCH || 'linux',
         argocd: {
             cliVersion: core.getInput('argocd-version'),
-            excludePaths: core.getInput('argocd-exclude-paths').split(','),
+            excludePaths: core.getInput('argocd-exclude-paths').split(',').filter((path: string) => path.trim() !== ''),
             extraCliArgs,
             fqdn,
             headers: parseHeaders(core.getInput('argocd-headers')),
