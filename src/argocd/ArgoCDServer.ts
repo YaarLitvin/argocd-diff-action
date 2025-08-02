@@ -25,6 +25,8 @@ export class ArgoCDServer {
         this.token = actionInput.argocd.token;
         this.uri = actionInput.argocd.uri;
         this.protocol = actionInput.argocd.protocol;
+
+        core.debug(`ArgoCDServer initialized with protocol: '${this.protocol}', FQDN: '${this.fqdn}', URI: '${this.uri}'`);
     }
 
     async installArgoCDCommand(version: string, arch = 'linux'): Promise<void> {
@@ -90,6 +92,7 @@ export class ArgoCDServer {
     async api(endpoint: string, params: string[] = [], method = 'GET'): Promise<any> {
         const url = `${this.protocol}://${this.fqdn}/api/${endpoint}?${params.join('&')}}`;
         core.debug(`Making API call to: '${url}'`);
+        core.debug(`Protocol: '${this.protocol}', FQDN: '${this.fqdn}'`);
 
         // response.json() returns `any`.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

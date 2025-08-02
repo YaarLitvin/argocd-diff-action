@@ -1,5 +1,4 @@
 import * as core from '@actions/core';
-import assert from 'node:assert/strict';
 
 export interface ActionInput {
     arch: string;
@@ -20,19 +19,27 @@ export interface ActionInput {
 function parseHeaders(input: string): Map<string, string> {
     const headers = new Map<string, string>();
 
+    // Handle empty input
+    if (!input || input.trim() === '') {
+        return headers;
+    }
+
     for (const item of input.split(',')) {
-        let [header, value] = item.split(':');
+        const trimmedItem = item.trim();
+        if (!trimmedItem) continue;
 
-        assert(header);
-        assert(value);
+        const colonIndex = trimmedItem.indexOf(':');
+        if (colonIndex === -1) {
+            // Skip items without colon
+            continue;
+        }
 
-        header = header.trim();
-        value = value.trim();
+        const header = trimmedItem.substring(0, colonIndex).trim();
+        const value = trimmedItem.substring(colonIndex + 1).trim();
 
-        assert.match(header, /.+/);
-        assert.match(value, /.+/);
-
-        headers.set(header, value);
+        if (header && value) {
+            headers.set(header, value);
+        }
     }
 
     return headers;
@@ -43,6 +50,8 @@ export default function getActionInput(): ActionInput {
     const fqdn = core.getInput('argocd-server-fqdn');
     const protocol = useTls ? 'https' : 'http';
     let extraCliArgs = core.getInput('argocd-extra-cli-args');
+
+    core.debug(`TLS input: '${core.getInput('argocd-server-tls')}', useTls: ${useTls}, protocol: ${protocol}`);
 
     if (!useTls) {
         extraCliArgs += ' --plaintext';
