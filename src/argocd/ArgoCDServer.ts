@@ -106,11 +106,11 @@ export class ArgoCDServer {
                     ...Object.fromEntries(this.headers),
                 },
             };
-            
+
             // Add additional debugging
             core.debug(`Fetch options: ${JSON.stringify(fetchOptions)}`);
             core.debug(`Full URL being fetched: ${url}`);
-            
+
             const response = await fetch(url, fetchOptions);
             core.debug(`API call response code: ${response.status}`);
             responseJson = await response.json();
