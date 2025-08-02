@@ -52,7 +52,7 @@ export default tseslint.config(
                 },
             ],
 
-            '@stylistic/func-call-spacing': ['error', 'never'],
+            '@stylistic/func-call-spacing': 'off',
             '@typescript-eslint/no-array-constructor': 'error',
             '@typescript-eslint/no-empty-interface': 'error',
             '@typescript-eslint/no-explicit-any': 'error',
