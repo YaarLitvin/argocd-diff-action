@@ -34423,8 +34423,12 @@ class ArgoCDServer {
             if (this.protocol === 'http') {
                 core.info('Using HTTP protocol - no TLS verification needed');
             }
+            // Configure Node.js to ignore SSL certificate validation
+            // This is needed because the server might redirect HTTP to HTTPS
+            process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+            core.info('Disabled SSL certificate validation (NODE_TLS_REJECT_UNAUTHORIZED=0)');
             const response = await fetch(url, fetchOptions);
-            core.debug(`API call response code: ${response.status}`);
+            core.info(`API call response code: ${response.status}`);
             responseJson = await response.json();
         }
         catch (err) {
