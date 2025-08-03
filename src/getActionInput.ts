@@ -47,15 +47,16 @@ function parseHeaders(input: string): Map<string, string> {
 
 export default function getActionInput(): ActionInput {
     const tlsInput = core.getInput('argocd-server-tls');
-    const useTls = tlsInput === 'true';
+    // Handle various string representations of true/false
+    const useTls = tlsInput === 'true' || tlsInput === '1';
     const fqdn = core.getInput('argocd-server-fqdn');
     const protocol = useTls ? 'https' : 'http';
     let extraCliArgs = core.getInput('argocd-extra-cli-args');
 
-    core.debug(`Raw TLS input: '${tlsInput}'`);
-    core.debug(`TLS input type: ${typeof tlsInput}`);
-    core.debug(`TLS input length: ${tlsInput.length}`);
-    core.debug(`useTls: ${useTls}, protocol: ${protocol}`);
+    core.info(`Raw TLS input: '${tlsInput}'`);
+    core.info(`TLS input type: ${typeof tlsInput}`);
+    core.info(`TLS input length: ${tlsInput.length}`);
+    core.info(`useTls: ${useTls}, protocol: ${protocol}`);
 
     if (!useTls) {
         extraCliArgs += ' --plaintext';

@@ -26,7 +26,7 @@ export class ArgoCDServer {
         this.uri = actionInput.argocd.uri;
         this.protocol = actionInput.argocd.protocol;
 
-        core.debug(`ArgoCDServer initialized with protocol: '${this.protocol}', FQDN: '${this.fqdn}', URI: '${this.uri}'`);
+        core.info(`ArgoCDServer initialized with protocol: '${this.protocol}', FQDN: '${this.fqdn}', URI: '${this.uri}'`);
     }
 
     async installArgoCDCommand(version: string, arch = 'linux'): Promise<void> {
@@ -90,9 +90,9 @@ export class ArgoCDServer {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async api(endpoint: string, params: string[] = [], method = 'GET'): Promise<any> {
-        const url = `${this.protocol}://${this.fqdn}/api/${endpoint}?${params.join('&')}`;
-        core.debug(`Making API call to: '${url}'`);
-        core.debug(`Protocol: '${this.protocol}', FQDN: '${this.fqdn}'`);
+                const url = `${this.protocol}://${this.fqdn}/api/${endpoint}?${params.join('&')}`;
+        core.info(`Making API call to: '${url}'`);
+        core.info(`Protocol: '${this.protocol}', FQDN: '${this.fqdn}'`);
 
         // response.json() returns `any`.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -106,15 +106,15 @@ export class ArgoCDServer {
                     ...Object.fromEntries(this.headers),
                 },
             };
-
+            
             // Add additional debugging
-            core.debug(`Fetch options: ${JSON.stringify(fetchOptions)}`);
-            core.debug(`Full URL being fetched: ${url}`);
-            core.debug(`Protocol being used: ${this.protocol}`);
-
+            core.info(`Fetch options: ${JSON.stringify(fetchOptions)}`);
+            core.info(`Full URL being fetched: ${url}`);
+            core.info(`Protocol being used: ${this.protocol}`);
+            
             // For HTTP connections, we might need to disable TLS verification
             if (this.protocol === 'http') {
-                core.debug('Using HTTP protocol - no TLS verification needed');
+                core.info('Using HTTP protocol - no TLS verification needed');
             }
 
             const response = await fetch(url, fetchOptions);
