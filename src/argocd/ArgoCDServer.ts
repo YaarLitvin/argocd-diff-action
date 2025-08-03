@@ -90,7 +90,7 @@ export class ArgoCDServer {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async api(endpoint: string, params: string[] = [], method = 'GET'): Promise<any> {
-                const url = `${this.protocol}://${this.fqdn}/api/${endpoint}?${params.join('&')}`;
+        const url = `${this.protocol}://${this.fqdn}/api/${endpoint}?${params.join('&')}`;
         core.info(`Making API call to: '${url}'`);
         core.info(`Protocol: '${this.protocol}', FQDN: '${this.fqdn}'`);
 
@@ -106,12 +106,12 @@ export class ArgoCDServer {
                     ...Object.fromEntries(this.headers),
                 },
             };
-            
+
             // Add additional debugging
             core.info(`Fetch options: ${JSON.stringify(fetchOptions)}`);
             core.info(`Full URL being fetched: ${url}`);
             core.info(`Protocol being used: ${this.protocol}`);
-            
+
             // For HTTP connections, we might need to disable TLS verification
             if (this.protocol === 'http') {
                 core.info('Using HTTP protocol - no TLS verification needed');
